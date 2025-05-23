@@ -31,7 +31,15 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define HIGH 1
+#define LOW 0
+#ifdef __GNUC__
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -52,6 +60,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -67,6 +76,20 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	/*
+	int buttonState=0;
+	int buttonStateOld=0;
+	int buttonFlag = 0;
+	int cnt=0;
+	*/
+
+	int bt0 = 0;
+	int bt1 = 0;
+	int bt2 = 0;
+	int bt3 = 0;
+	int bt4 = 0;
+	int bt5 = 0;
+	int bt6 = 0;
 
   /* USER CODE END 1 */
 
@@ -90,13 +113,91 @@ int main(void)
   MX_GPIO_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+  printf("main() start\r\n");
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+#if 0
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+	  HAL_Delay(100);
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+	  HAL_Delay(100);
+#endif
+#if 0
+	  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+	  HAL_Delay(100);
+#endif
+#if 0
+	  if (button_state_old != button_state)
+	  {
+		  button_state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, !button_state);
+	  }
+#endif
+	  bt0 = !(HAL_GPIO_ReadPin(GPIOC, BTN0_Pin));
+	  bt1 = !(HAL_GPIO_ReadPin(GPIOC, BTN1_Pin));
+	  bt2 = !(HAL_GPIO_ReadPin(GPIOC, BTN2_Pin));
+	  bt3 = !(HAL_GPIO_ReadPin(GPIOC, BTN3_Pin));
+	  bt4 = !(HAL_GPIO_ReadPin(GPIOC, BTN4_Pin));
+	  bt5 = !(HAL_GPIO_ReadPin(GPIOC, BTN5_Pin));
+	  bt6 = !(HAL_GPIO_ReadPin(GPIOC, BTN6_Pin));
+
+	  if (!bt0)
+		  HAL_GPIO_TogglePin(GPIOB, LED0_Pin);
+	  if (!bt1)
+		  HAL_GPIO_TogglePin(GPIOB, LED1_Pin);
+	  if (!bt2)
+		  HAL_GPIO_TogglePin(GPIOB, LED2_Pin);
+	  if (!bt3)
+	  	  HAL_GPIO_TogglePin(GPIOB, LED3_Pin);
+	  if (!bt4)
+		  HAL_GPIO_TogglePin(GPIOB, LED4_Pin);
+	  if (!bt5)
+		  HAL_GPIO_TogglePin(GPIOB, LED5_Pin);
+	  if (!bt6)
+		  HAL_GPIO_TogglePin(GPIOB, LED6_Pin);
+
+#if 0
+			#define GPIO_PIN_0                 ((uint16_t)0x0001)  /* Pin 0 selected    */
+			#define GPIO_PIN_1                 ((uint16_t)0x0002)  /* Pin 1 selected    */
+			#define GPIO_PIN_2                 ((uint16_t)0x0004)  /* Pin 2 selected    */
+			#define GPIO_PIN_3                 ((uint16_t)0x0008)  /* Pin 3 selected    */
+			#define GPIO_PIN_4                 ((uint16_t)0x0010)  /* Pin 4 selected    */
+			#define GPIO_PIN_5                 ((uint16_t)0x0020)  /* Pin 5 selected    */
+			#define GPIO_PIN_6                 ((uint16_t)0x0040)  /* Pin 6 selected    */
+			#define GPIO_PIN_7                 ((uint16_t)0x0080)  /* Pin 7 selected    */
+			#define GPIO_PIN_8                 ((uint16_t)0x0100)  /* Pin 8 selected    */
+			#define GPIO_PIN_9                 ((uint16_t)0x0200)  /* Pin 9 selected    */
+			#define GPIO_PIN_10                ((uint16_t)0x0400)  /* Pin 10 selected   */
+			#define GPIO_PIN_11                ((uint16_t)0x0800)  /* Pin 11 selected   */
+			#define GPIO_PIN_12                ((uint16_t)0x1000)  /* Pin 12 selected   */
+			#define GPIO_PIN_13                ((uint16_t)0x2000)  /* Pin 13 selected   */
+			#define GPIO_PIN_14                ((uint16_t)0x4000)  /* Pin 14 selected   */
+			#define GPIO_PIN_15                ((uint16_t)0x8000)  /* Pin 15 selected   */
+			#define GPIO_PIN_All               ((uint16_t)0xFFFF)  /* All pins selected */
+#endif
+
+#if 0
+	  if (buttonState != buttonStateOld)
+		{
+		  if (buttonState)
+		  {
+			  buttonFlag = !buttonFlag;
+			  printf("Button Flag Changed: %d\n\r", buttonFlag);
+			  printf("Count: %d\r\n", cnt++);
+			  if (buttonFlag == HIGH)
+				  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, HIGH);
+			  else
+				  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, LOW);
+
+		  }
+		  buttonStateOld = buttonState;
+		}
+#endif
+
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -204,11 +305,23 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LED6_Pin|LED0_Pin|LED1_Pin|LED2_Pin
+                          |LED3_Pin|LED4_Pin|LED5_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : BTN0_Pin BTN1_Pin BTN2_Pin BTN3_Pin
+                           BTN4_Pin BTN5_Pin BTN6_Pin */
+  GPIO_InitStruct.Pin = BTN0_Pin|BTN1_Pin|BTN2_Pin|BTN3_Pin
+                          |BTN4_Pin|BTN5_Pin|BTN6_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin : LD2_Pin */
   GPIO_InitStruct.Pin = LD2_Pin;
@@ -217,13 +330,34 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
+  /*Configure GPIO pins : LED6_Pin LED0_Pin LED1_Pin LED2_Pin0
+                           LED3_Pin LED4_Pin LED5_Pin */
+  GPIO_InitStruct.Pin = LED6_Pin|LED0_Pin|LED1_Pin|LED2_Pin
+                          |LED3_Pin|LED4_Pin|LED5_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
   /* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
+/**
+  * @brief  Retargets the C library printf function to the USART.
+  * @param  None
+  * @retval None
+  */
+PUTCHAR_PROTOTYPE
+{
+  /* Place your implementation of fputc here */
+  /* e.g. write a character to the USART6 and Loop until the end of transmission */
+  HAL_UART_Transmit(&huart2, (uint8_t *)&ch, 1, 0xFFFF);
 
+  return ch;
+}
 /* USER CODE END 4 */
 
 /**
